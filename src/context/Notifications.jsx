@@ -1,19 +1,21 @@
-// Browser-notification scheduling. Lives in a provider so the timers are armed
-// exactly once, while the permission state is shared by the dashboard + settings.
-//
-// NOTE: browser notifications only fire while the app is open in a tab. There is
-// no reliable way to fire them when the tab/app is fully closed without a backend
-// + push service, so the dashboard also shows an in-app reminder banner as a
-// fallback. See ReminderBanner.
+// Notification scheduling. Two paths:
+//  - Web (browser / PWA): the Notification API, scheduled with timers while the
+//    app is open. Fires only while a tab is open — hence the dashboard fallback
+//    banner. Requires the page to be open.
+//  - Native (Capacitor / Android): @capacitor/local-notifications schedules real
+//    OS notifications that fire even when the app is fully closed.
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { Capacitor } from '@capacitor/core'
 import { useApp } from './AppData'
 
-const supported = typeof window !== 'undefined' && 'Notification' in window
-const Ctx = createContext({ supported: false, permission: 'unsupported', request: async () => 'unsupported' })
+const isNative = Capacitor.isNativePlatform()
+const webSupported = typeof window !== 'undefined' && 'Notification' in window
+const supported = isNative || webSupported
 
+const Ctx = createContext({ supported: false, permission: 'unsupported', request: async () => 'unsupported' })
 export const useNotifications = () => useContext(Ctx)
 
-// ms from now until the next HH:MM (today or tomorrow).
+// ---- web helpers ----
 function msUntilTime(timeStr) {
   const [h, m] = timeStr.split(':').map(Number)
   const now = new Date()
@@ -21,8 +23,6 @@ function msUntilTime(timeStr) {
   if (next <= now) next.setDate(next.getDate() + 1)
   return next - now
 }
-
-// ms from now until the next HH:MM that falls on the given weekday (0 = Sun).
 function msUntilWeekly(timeStr, weekday) {
   const [h, m] = timeStr.split(':').map(Number)
   const now = new Date()
@@ -32,28 +32,73 @@ function msUntilWeekly(timeStr, weekday) {
   next.setDate(next.getDate() + add)
   return next - now
 }
-
-function fire(title, body) {
-  if (!supported || Notification.permission !== 'granted') return
+function fireWeb(title, body) {
+  if (Notification.permission !== 'granted') return
   try {
     new Notification(title, { body, icon: 'favicon.svg', tag: title })
   } catch {
-    // some browsers throw if called outside a SW context — ignore
+    /* some browsers only allow notifications from a service worker — ignore */
   }
+}
+
+// ---- native (Capacitor) helpers ----
+const mapDisplay = (d) => (d === 'granted' ? 'granted' : d === 'denied' ? 'denied' : 'default')
+
+async function scheduleNative(s) {
+  const { LocalNotifications } = await import('@capacitor/local-notifications')
+  await LocalNotifications.cancel({ notifications: [{ id: 1 }, { id: 2 }] })
+  const notifications = []
+  if (s.dailyEnabled) {
+    const [h, m] = s.dailyTime.split(':').map(Number)
+    notifications.push({
+      id: 1,
+      title: 'Time for your coding practice block 💻',
+      body: 'Just 20–30 minutes today. Open Pathway and tick it off.',
+      schedule: { on: { hour: h, minute: m }, allowWhileIdle: true },
+    })
+  }
+  if (s.weeklyEnabled) {
+    const [h, m] = s.weeklyTime.split(':').map(Number)
+    notifications.push({
+      id: 2,
+      title: 'Weekly project time 🗓️',
+      body: 'Work on your portfolio & push something to GitHub.',
+      // Capacitor weekday: 1 = Sunday .. 7 = Saturday (JS getDay is 0..6)
+      schedule: { on: { weekday: s.weeklyDay + 1, hour: h, minute: m }, allowWhileIdle: true },
+    })
+  }
+  if (notifications.length) await LocalNotifications.schedule({ notifications })
 }
 
 export function NotificationsProvider({ children }) {
   const { data } = useApp()
   const s = data.settings
-  const [permission, setPermission] = useState(supported ? Notification.permission : 'unsupported')
+  const [permission, setPermission] = useState(() =>
+    isNative ? 'default' : webSupported ? Notification.permission : 'unsupported',
+  )
 
-  // Daily reminder (re-arms itself every 24h).
+  // On native, read the current permission once on mount.
   useEffect(() => {
-    if (!supported || permission !== 'granted' || !s.dailyEnabled) return
+    if (!isNative) return
+    import('@capacitor/local-notifications')
+      .then(({ LocalNotifications }) => LocalNotifications.checkPermissions())
+      .then((p) => setPermission(mapDisplay(p.display)))
+      .catch(() => {})
+  }, [])
+
+  // Native: (re)schedule OS notifications whenever settings or permission change.
+  useEffect(() => {
+    if (!isNative || permission !== 'granted') return
+    scheduleNative(s).catch(() => {})
+  }, [permission, s.dailyEnabled, s.dailyTime, s.weeklyEnabled, s.weeklyTime, s.weeklyDay])
+
+  // Web: daily reminder (re-arms every 24h while the app is open).
+  useEffect(() => {
+    if (isNative || !webSupported || permission !== 'granted' || !s.dailyEnabled) return
     let timer
     const arm = () => {
       timer = setTimeout(() => {
-        fire('Time for your coding practice block 💻', 'Just 20–30 minutes today. Open Pathway and tick it off.')
+        fireWeb('Time for your coding practice block 💻', 'Just 20–30 minutes today. Open Pathway and tick it off.')
         arm()
       }, msUntilTime(s.dailyTime))
     }
@@ -61,13 +106,13 @@ export function NotificationsProvider({ children }) {
     return () => clearTimeout(timer)
   }, [permission, s.dailyEnabled, s.dailyTime])
 
-  // Weekly reminder.
+  // Web: weekly reminder.
   useEffect(() => {
-    if (!supported || permission !== 'granted' || !s.weeklyEnabled) return
+    if (isNative || !webSupported || permission !== 'granted' || !s.weeklyEnabled) return
     let timer
     const arm = () => {
       timer = setTimeout(() => {
-        fire('Weekly project time 🗓️', 'Work on your portfolio & push something to GitHub.')
+        fireWeb('Weekly project time 🗓️', 'Work on your portfolio & push something to GitHub.')
         arm()
       }, msUntilWeekly(s.weeklyTime, s.weeklyDay))
     }
@@ -77,10 +122,16 @@ export function NotificationsProvider({ children }) {
 
   const request = useCallback(async () => {
     if (!supported) return 'unsupported'
+    if (isNative) {
+      const { LocalNotifications } = await import('@capacitor/local-notifications')
+      const p = mapDisplay((await LocalNotifications.requestPermissions()).display)
+      setPermission(p)
+      return p
+    }
     let p = Notification.permission
     if (p === 'default') p = await Notification.requestPermission()
     setPermission(p)
-    if (p === 'granted') fire('Notifications on ✅', "You'll get practice reminders while Pathway is open.")
+    if (p === 'granted') fireWeb('Notifications on ✅', "You'll get practice reminders while Pathway is open.")
     return p
   }, [])
 

@@ -5,6 +5,7 @@ desktop/node_modules
 # builds
 dist
 dist-ssr
+desktop/app
 desktop/dist
 *.exe
 *.apk
