@@ -59,17 +59,19 @@ Windows produces an NSIS installer; `build.mac` / `build.linux` targets are conf
 Capacitor project (regenerated into `android/`). Unlike the web/PWA build, the Android app uses **native local notifications** (`@capacitor/local-notifications`), so daily/weekly reminders fire **even when the app is fully closed** (and survive reboots). Two ways to get the APK:
 
 **A) Build in the cloud — recommended, no Android Studio needed.**
-`.github/workflows/android-apk.yml` builds a debug APK on GitHub's runners (which have JDK 17 + the Android SDK) and attaches it to a Release. Pushing CI files needs the `workflow` token scope, so enable it once:
+`.github/workflows/android-apk.yml` builds a **signed release** APK **and** an AAB (for Google Play) on GitHub's runners and publishes them to a Release. The signing secrets (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`) are already configured on the repo. Pushing CI files needs the `workflow` token scope, so enable it once:
 
 ```bash
 gh auth refresh -s workflow                       # one-time, approve in browser
 git add -f .github/workflows/android-apk.yml
-git commit -m "Add Android APK build workflow"
+git commit -m "Add Android build workflow"
 git push
 gh workflow run "Build Android APK"               # or: repo → Actions → Run workflow
 ```
 
-Then on your phone, open the repo's **Releases → Pathway APK (latest)**, download `app-debug.apk`, and install (allow install from this source). It's debug-signed — fine for personal sideloading.
+Then on your phone, open the repo's **Releases → Pathway Android (latest)** and download `app-release.apk` to sideload, or `app-release.aab` to upload to Google Play.
+
+> 🔑 **Back up `pathway-release.jks`** (in the project root, git-ignored) **and its password.** They are the app's signing identity — lose them and you can't publish updates to an app already on the Play Store.
 
 **B) Build locally with Android Studio** (bundles JDK 17 + SDK; this machine only has Java 8):
 

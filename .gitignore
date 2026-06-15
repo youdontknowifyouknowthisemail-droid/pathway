@@ -11,6 +11,11 @@ desktop/dist
 *.apk
 *.aab
 
+# signing — NEVER commit a keystore
+*.jks
+*.keystore
+*.p12
+
 # native projects (regenerate with: npx cap add android / add ios)
 android/
 ios/
