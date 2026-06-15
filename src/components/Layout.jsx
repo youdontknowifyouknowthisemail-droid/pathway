@@ -5,6 +5,7 @@ import { daysUntil, KEY_DATES } from '../lib/dates'
 
 const NAV = [
   { to: '/', ic: '🏠', label: 'Dashboard', end: true },
+  { to: '/practice', ic: '🧪', label: 'Practice' },
   { to: '/curriculum', ic: '📚', label: 'Curriculum' },
   { to: '/projects', ic: '🧩', label: 'Projects' },
   { to: '/goals', ic: '🎯', label: 'Goals' },

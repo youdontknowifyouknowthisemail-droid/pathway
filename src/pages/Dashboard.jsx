@@ -1,5 +1,8 @@
+import { Link } from 'react-router-dom'
 import { useApp } from '../context/AppData'
 import { PageHead, Card, Ring, Check } from '../components/ui'
+import { dailyChallenge } from '../lib/practice/daily'
+import { CHALLENGE_LANGS } from '../lib/practice/challenges'
 import Countdown from '../components/Countdown'
 import PhaseTimeline from '../components/PhaseTimeline'
 import Heatmap from '../components/Heatmap'
@@ -11,6 +14,8 @@ export default function Dashboard() {
   const k = todayKey()
   const today = data.daily[k] || { done: false, note: '' }
   const nextItem = data.curriculum.find((c) => !c.done)
+  const dose = dailyChallenge(k)
+  const doseDone = !!data.practice.dailyDone[k]
 
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
@@ -20,6 +25,16 @@ export default function Dashboard() {
       <PageHead title={`${greeting} 👋`} sub={`You're in Phase ${phase.id} — ${phase.name}.`} />
 
       <ReminderBanner />
+
+      <Link to="/practice" className="card card-pad clickable daily-dose">
+        <div className="row between wrap">
+          <div className="grow">
+            <div className="card-title">🧪 Daily dose of code</div>
+            <div className="muted small">{doseDone ? 'Done today — nice work.' : `Today’s challenge: ${dose.title} (${CHALLENGE_LANGS[dose.lang]})`}</div>
+          </div>
+          <span className="pill">{doseDone ? 'done ✓' : 'Solve →'}</span>
+        </div>
+      </Link>
 
       <div className="grid dash-top">
         <Card className="card-pad focus-card">

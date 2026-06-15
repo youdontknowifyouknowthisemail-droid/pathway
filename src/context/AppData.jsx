@@ -29,6 +29,11 @@ export function AppProvider({ children }) {
       [key]: d[key].map((x) => (x.id === id ? { ...x, ...patch } : x)),
     })
     const removeFrom = (key, id) => (d) => ({ ...d, [key]: d[key].filter((x) => x.id !== id) })
+    const markToday = (daily, note) => {
+      const k = todayKey()
+      const cur = daily[k] || { done: false, note: '' }
+      return { ...daily, [k]: { ...cur, done: true, note: cur.note || note } }
+    }
 
     return {
       // Daily practice
@@ -100,6 +105,24 @@ export function AppProvider({ children }) {
       // Journal
       setJournal(key, text) {
         setData((d) => ({ ...d, journal: { ...d.journal, [key]: text } }))
+      },
+
+      // Practice
+      recordQuiz(correct) {
+        setData((d) => ({ ...d, practice: { ...d.practice, quizAnswered: d.practice.quizAnswered + 1, quizCorrect: d.practice.quizCorrect + (correct ? 1 : 0) } }))
+      },
+      solveChallenge(id) {
+        setData((d) => {
+          const solved = d.practice.solved.includes(id) ? d.practice.solved : [...d.practice.solved, id]
+          return { ...d, practice: { ...d.practice, solved }, daily: markToday(d.daily, 'Solved a code challenge') }
+        })
+      },
+      completeDaily(dateKey) {
+        setData((d) => ({
+          ...d,
+          practice: { ...d.practice, dailyDone: { ...d.practice.dailyDone, [dateKey]: true } },
+          daily: markToday(d.daily, 'Daily dose of code'),
+        }))
       },
 
       // Settings

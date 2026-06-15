@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
+import Practice from './pages/Practice'
 import Curriculum from './pages/Curriculum'
 import Projects from './pages/Projects'
 import Goals from './pages/Goals'
@@ -12,6 +13,7 @@ export default function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<Dashboard />} />
+        <Route path="/practice" element={<Practice />} />
         <Route path="/curriculum" element={<Curriculum />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/goals" element={<Goals />} />
