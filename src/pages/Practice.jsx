@@ -6,7 +6,7 @@ import QuizRunner from '../components/QuizRunner'
 import { CHALLENGES, CHALLENGE_LANGS, DIFFICULTIES } from '../lib/practice/challenges'
 import { QUIZZES, QUIZ_TOPICS } from '../lib/practice/quizzes'
 import { LESSONS, LESSON_TOPICS } from '../lib/practice/lessons'
-import { dailyChallenge } from '../lib/practice/daily'
+import { dailyItem } from '../lib/practice/daily'
 import { todayKey } from '../lib/dates'
 import { cx } from '../lib/util'
 
@@ -24,16 +24,19 @@ function pickN(arr, n) {
 function DailyTab() {
   const { data, completeDaily } = useApp()
   const today = todayKey()
-  const ch = useMemo(() => dailyChallenge(today), [today])
+  const item = useMemo(() => dailyItem(today), [today])
   const done = !!data.practice.dailyDone[today]
+  const challenge = item?.type === 'challenge' ? CHALLENGES.find((c) => c.id === item.id) : null
+  const question = item?.type === 'quiz' ? QUIZZES.find((q) => q.id === item.id) : null
   return (
     <Card className="card-pad">
       <div className="row between wrap">
         <div className="card-title">🧪 Daily dose of code</div>
         {done ? <Tag tone="good">done today ✓</Tag> : <Tag tone="warn">not done</Tag>}
       </div>
-      <p className="muted small">One bite-size challenge a day. Solving it ticks off today’s practice and keeps your streak alive.</p>
-      <ChallengeRunner challenge={ch} onSolved={() => completeDaily(today)} />
+      <p className="muted small">A different challenge or quiz question each day — finishing it ticks off today’s practice and keeps your streak alive.</p>
+      {challenge && <ChallengeRunner challenge={challenge} onSolved={() => completeDaily(today)} />}
+      {question && <QuizRunner questions={[question]} onDone={() => completeDaily(today)} />}
     </Card>
   )
 }

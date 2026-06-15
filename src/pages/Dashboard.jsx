@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
 import { useApp } from '../context/AppData'
 import { PageHead, Card, Ring, Check } from '../components/ui'
-import { dailyChallenge } from '../lib/practice/daily'
-import { CHALLENGE_LANGS } from '../lib/practice/challenges'
+import { dailyItem } from '../lib/practice/daily'
+import { CHALLENGES } from '../lib/practice/challenges'
+import { QUIZZES } from '../lib/practice/quizzes'
 import Countdown from '../components/Countdown'
 import PhaseTimeline from '../components/PhaseTimeline'
 import Heatmap from '../components/Heatmap'
@@ -14,8 +15,11 @@ export default function Dashboard() {
   const k = todayKey()
   const today = data.daily[k] || { done: false, note: '' }
   const nextItem = data.curriculum.find((c) => !c.done)
-  const dose = dailyChallenge(k)
+  const dose = dailyItem(k)
   const doseDone = !!data.practice.dailyDone[k]
+  const doseLabel = dose?.type === 'challenge'
+    ? `Today: ${CHALLENGES.find((c) => c.id === dose.id)?.title}`
+    : `Today: a ${QUIZZES.find((q) => q.id === dose.id)?.topic} quiz`
 
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
@@ -30,7 +34,7 @@ export default function Dashboard() {
         <div className="row between wrap">
           <div className="grow">
             <div className="card-title">🧪 Daily dose of code</div>
-            <div className="muted small">{doseDone ? 'Done today — nice work.' : `Today’s challenge: ${dose.title} (${CHALLENGE_LANGS[dose.lang]})`}</div>
+            <div className="muted small">{doseDone ? 'Done today — nice work.' : doseLabel}</div>
           </div>
           <span className="pill">{doseDone ? 'done ✓' : 'Solve →'}</span>
         </div>
