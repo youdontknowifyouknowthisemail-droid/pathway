@@ -73,6 +73,8 @@ Then on your phone, open the repo's **Releases → Pathway Android (latest)** an
 
 > 🔑 **Back up `pathway-release.jks`** (in the project root, git-ignored) **and its password.** They are the app's signing identity — lose them and you can't publish updates to an app already on the Play Store.
 
+📄 Full Google Play walkthrough: see **[PUBLISHING.md](PUBLISHING.md)**.
+
 **B) Build locally with Android Studio** (bundles JDK 17 + SDK; this machine only has Java 8):
 
 ```bash

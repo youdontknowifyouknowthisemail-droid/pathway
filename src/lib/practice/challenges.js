@@ -1,20 +1,28 @@
-// Coding exercises. Each runs the user's function against `tests` (args + expected)
-// in the browser: JavaScript in a Web Worker, Python via Pyodide.
+// Runnable coding exercises (Exercism-style). Each runs the user's function
+// against `tests` (args + expected) in the browser: JavaScript in a Web Worker,
+// Python via Pyodide. Original problems covering common fundamentals.
 export const CHALLENGES = [
-  // ---- JavaScript ----
+  // ===== JavaScript =====
   {
     id: 'js-reverse', lang: 'js', title: 'Reverse a string', difficulty: 'easy', fn: 'reverseString',
     prompt: 'Return the given string reversed.',
     starter: 'function reverseString(s) {\n  // your code here\n}\n',
     tests: [{ args: ['hello'], expected: 'olleh' }, { args: [''], expected: '' }, { args: ['ab'], expected: 'ba' }],
-    hints: ['A string can be split into characters with [...s] or s.split("").', 'Array has .reverse() and .join("").'],
+    hints: ['Split into characters with [...s], reverse the array, then .join("").'],
   },
   {
     id: 'js-sum', lang: 'js', title: 'Sum an array', difficulty: 'easy', fn: 'sumArray',
     prompt: 'Return the sum of all numbers in the array. Empty array → 0.',
     starter: 'function sumArray(nums) {\n  // your code here\n}\n',
     tests: [{ args: [[1, 2, 3]], expected: 6 }, { args: [[]], expected: 0 }, { args: [[5]], expected: 5 }, { args: [[-1, 1]], expected: 0 }],
-    hints: ['A for-loop or nums.reduce((a, b) => a + b, 0) both work.'],
+    hints: ['A for-loop or nums.reduce((a, b) => a + b, 0).'],
+  },
+  {
+    id: 'js-max', lang: 'js', title: 'Max of array', difficulty: 'easy', fn: 'maxOf',
+    prompt: 'Return the largest number in a non-empty array.',
+    starter: 'function maxOf(nums) {\n  // your code here\n}\n',
+    tests: [{ args: [[3, 7, 2]], expected: 7 }, { args: [[-1, -5]], expected: -1 }, { args: [[42]], expected: 42 }],
+    hints: ['Math.max(...nums), or track a running max in a loop.'],
   },
   {
     id: 'js-palindrome', lang: 'js', title: 'Palindrome check', difficulty: 'easy', fn: 'isPalindrome',
@@ -24,34 +32,139 @@ export const CHALLENGES = [
     hints: ['Compare the string to its reverse.'],
   },
   {
+    id: 'js-capitalize', lang: 'js', title: 'Capitalize', difficulty: 'easy', fn: 'capitalize',
+    prompt: 'Capitalize the first letter and lowercase the rest. "" → "".',
+    starter: 'function capitalize(s) {\n  // your code here\n}\n',
+    tests: [{ args: ['hello'], expected: 'Hello' }, { args: ['WORLD'], expected: 'World' }, { args: [''], expected: '' }],
+    hints: ['s.charAt(0).toUpperCase() + s.slice(1).toLowerCase().'],
+  },
+  {
+    id: 'js-vowels', lang: 'js', title: 'Count vowels', difficulty: 'easy', fn: 'countVowels',
+    prompt: 'Count the vowels (a, e, i, o, u) in the string, case-insensitive.',
+    starter: 'function countVowels(s) {\n  // your code here\n}\n',
+    tests: [{ args: ['hello'], expected: 2 }, { args: ['sky'], expected: 0 }, { args: ['AEIOU'], expected: 5 }],
+    hints: ['Lowercase the string and count chars contained in "aeiou".'],
+  },
+  {
+    id: 'js-sumdigits', lang: 'js', title: 'Sum of digits', difficulty: 'easy', fn: 'sumDigits',
+    prompt: 'Return the sum of the digits of a non-negative integer.',
+    starter: 'function sumDigits(n) {\n  // your code here\n}\n',
+    tests: [{ args: [123], expected: 6 }, { args: [0], expected: 0 }, { args: [99], expected: 18 }],
+    hints: ['Convert to a string and add the digits, or use % 10 and Math.floor(n/10).'],
+  },
+  {
+    id: 'js-factorial', lang: 'js', title: 'Factorial', difficulty: 'easy', fn: 'factorial',
+    prompt: 'Return n! (n factorial). Assume n ≥ 0, and 0! === 1.',
+    starter: 'function factorial(n) {\n  // your code here\n}\n',
+    tests: [{ args: [0], expected: 1 }, { args: [5], expected: 120 }, { args: [3], expected: 6 }],
+    hints: ['Loop multiplying 1..n, or recurse: n * factorial(n - 1).'],
+  },
+  {
     id: 'js-fizzbuzz', lang: 'js', title: 'FizzBuzz', difficulty: 'medium', fn: 'fizzbuzz',
     prompt: 'Return an array for 1..n: multiples of 3 → "Fizz", of 5 → "Buzz", of both → "FizzBuzz", else the number.',
     starter: 'function fizzbuzz(n) {\n  // return an array of length n\n}\n',
     tests: [{ args: [5], expected: [1, 2, 'Fizz', 4, 'Buzz'] }, { args: [3], expected: [1, 2, 'Fizz'] }, { args: [15], expected: [1, 2, 'Fizz', 4, 'Buzz', 'Fizz', 7, 8, 'Fizz', 'Buzz', 11, 'Fizz', 13, 14, 'FizzBuzz'] }],
-    hints: ['Check divisibility by 15 first (both 3 and 5), then 3, then 5.'],
+    hints: ['Check divisibility by 15 first, then 3, then 5.'],
   },
   {
-    id: 'js-max', lang: 'js', title: 'Max of array', difficulty: 'easy', fn: 'maxOf',
-    prompt: 'Return the largest number in a non-empty array.',
-    starter: 'function maxOf(nums) {\n  // your code here\n}\n',
-    tests: [{ args: [[3, 7, 2]], expected: 7 }, { args: [[-1, -5]], expected: -1 }, { args: [[42]], expected: 42 }],
-    hints: ['Math.max(...nums) is the one-liner, or track a running max in a loop.'],
+    id: 'js-titlecase', lang: 'js', title: 'Title case', difficulty: 'medium', fn: 'titleCase',
+    prompt: 'Capitalize the first letter of each space-separated word.',
+    starter: 'function titleCase(s) {\n  // your code here\n}\n',
+    tests: [{ args: ['hello world'], expected: 'Hello World' }, { args: ['the quick fox'], expected: 'The Quick Fox' }, { args: ['a'], expected: 'A' }],
+    hints: ['Split on " ", uppercase each word\'s first char, join back with " ".'],
+  },
+  {
+    id: 'js-countwords', lang: 'js', title: 'Count words', difficulty: 'medium', fn: 'countWords',
+    prompt: 'Count the words in a string. Multiple/leading/trailing spaces shouldn\'t count. "" → 0.',
+    starter: 'function countWords(s) {\n  // your code here\n}\n',
+    tests: [{ args: ['hello world'], expected: 2 }, { args: [''], expected: 0 }, { args: ['one'], expected: 1 }, { args: ['  a   b  c '], expected: 3 }],
+    hints: ['s.trim().split(/\\s+/).filter(Boolean).length handles the spacing edge cases.'],
+  },
+  {
+    id: 'js-isprime', lang: 'js', title: 'Is prime?', difficulty: 'medium', fn: 'isPrime',
+    prompt: 'Return true if n is a prime number. 0 and 1 are not prime.',
+    starter: 'function isPrime(n) {\n  // your code here\n}\n',
+    tests: [{ args: [2], expected: true }, { args: [1], expected: false }, { args: [9], expected: false }, { args: [13], expected: true }],
+    hints: ['Check divisors from 2 up to √n; if any divides n, it is not prime.'],
+  },
+  {
+    id: 'js-unique', lang: 'js', title: 'Unique values', difficulty: 'medium', fn: 'unique',
+    prompt: 'Return a new array with duplicates removed, keeping the first occurrence order.',
+    starter: 'function unique(arr) {\n  // your code here\n}\n',
+    tests: [{ args: [[1, 2, 2, 3]], expected: [1, 2, 3] }, { args: [[5, 5]], expected: [5] }, { args: [[]], expected: [] }],
+    hints: ['[...new Set(arr)] removes duplicates and keeps insertion order.'],
+  },
+  {
+    id: 'js-fib', lang: 'js', title: 'Fibonacci', difficulty: 'medium', fn: 'fib',
+    prompt: 'Return the nth Fibonacci number (0-indexed): fib(0)=0, fib(1)=1, then each is the sum of the previous two.',
+    starter: 'function fib(n) {\n  // your code here\n}\n',
+    tests: [{ args: [0], expected: 0 }, { args: [1], expected: 1 }, { args: [7], expected: 13 }, { args: [10], expected: 55 }],
+    hints: ['Iterate keeping the last two values; avoid naive recursion for large n.'],
   },
 
-  // ---- Python ----
+  // ===== Python =====
   {
-    id: 'py-factorial', lang: 'py', title: 'Factorial', difficulty: 'easy', fn: 'factorial',
+    id: 'py-factorial', lang: 'py', title: 'Factorial (Python)', difficulty: 'easy', fn: 'factorial',
     prompt: 'Return n! (n factorial). Assume n ≥ 0, and 0! == 1.',
     starter: 'def factorial(n):\n    # your code here\n    pass\n',
     tests: [{ args: [0], expected: 1 }, { args: [5], expected: 120 }, { args: [3], expected: 6 }],
-    hints: ['Loop from 1 to n multiplying, or use recursion: n * factorial(n-1).'],
+    hints: ['Loop from 1 to n multiplying, or recurse: n * factorial(n - 1).'],
   },
   {
-    id: 'py-vowels', lang: 'py', title: 'Count vowels', difficulty: 'easy', fn: 'count_vowels',
+    id: 'py-vowels', lang: 'py', title: 'Count vowels (Python)', difficulty: 'easy', fn: 'count_vowels',
     prompt: 'Return how many vowels (a, e, i, o, u) are in the string, case-insensitive.',
     starter: 'def count_vowels(s):\n    # your code here\n    pass\n',
     tests: [{ args: ['hello'], expected: 2 }, { args: ['sky'], expected: 0 }, { args: ['Apple'], expected: 2 }],
     hints: ['Lowercase the string, then sum 1 for each char in "aeiou".'],
+  },
+  {
+    id: 'py-sumlist', lang: 'py', title: 'Sum a list', difficulty: 'easy', fn: 'sum_list',
+    prompt: 'Return the sum of a list of numbers. Empty list → 0.',
+    starter: 'def sum_list(nums):\n    # your code here\n    pass\n',
+    tests: [{ args: [[1, 2, 3]], expected: 6 }, { args: [[]], expected: 0 }, { args: [[5]], expected: 5 }],
+    hints: ['Python has a built-in sum(), or write a loop with an accumulator.'],
+  },
+  {
+    id: 'py-reverselist', lang: 'py', title: 'Reverse a list', difficulty: 'easy', fn: 'reverse_list',
+    prompt: 'Return a new list with the elements in reverse order.',
+    starter: 'def reverse_list(lst):\n    # your code here\n    pass\n',
+    tests: [{ args: [[1, 2, 3]], expected: [3, 2, 1] }, { args: [[]], expected: [] }, { args: [[9]], expected: [9] }],
+    hints: ['lst[::-1] reverses with slicing.'],
+  },
+  {
+    id: 'py-max', lang: 'py', title: 'Max of list (Python)', difficulty: 'easy', fn: 'max_of',
+    prompt: 'Return the largest number in a non-empty list.',
+    starter: 'def max_of(nums):\n    # your code here\n    pass\n',
+    tests: [{ args: [[3, 7, 2]], expected: 7 }, { args: [[-1, -5]], expected: -1 }, { args: [[42]], expected: 42 }],
+    hints: ['The built-in max() works, or track a running maximum.'],
+  },
+  {
+    id: 'py-double', lang: 'py', title: 'Double each', difficulty: 'easy', fn: 'double_all',
+    prompt: 'Return a new list with every number doubled.',
+    starter: 'def double_all(nums):\n    # your code here\n    pass\n',
+    tests: [{ args: [[1, 2, 3]], expected: [2, 4, 6] }, { args: [[]], expected: [] }, { args: [[0, -2]], expected: [0, -4] }],
+    hints: ['A list comprehension: [x * 2 for x in nums].'],
+  },
+  {
+    id: 'py-palindrome', lang: 'py', title: 'Palindrome (Python)', difficulty: 'easy', fn: 'is_palindrome',
+    prompt: 'Return True if the string reads the same forwards and backwards.',
+    starter: 'def is_palindrome(s):\n    # your code here\n    pass\n',
+    tests: [{ args: ['racecar'], expected: true }, { args: ['hello'], expected: false }, { args: ['a'], expected: true }],
+    hints: ['Compare s to its reverse s[::-1].'],
+  },
+  {
+    id: 'py-isprime', lang: 'py', title: 'Is prime? (Python)', difficulty: 'medium', fn: 'is_prime',
+    prompt: 'Return True if n is a prime number. 0 and 1 are not prime.',
+    starter: 'def is_prime(n):\n    # your code here\n    pass\n',
+    tests: [{ args: [2], expected: true }, { args: [1], expected: false }, { args: [9], expected: false }, { args: [13], expected: true }],
+    hints: ['Check divisors from 2 up to int(n ** 0.5) + 1.'],
+  },
+  {
+    id: 'py-fib', lang: 'py', title: 'Fibonacci (Python)', difficulty: 'medium', fn: 'fib',
+    prompt: 'Return the nth Fibonacci number (0-indexed): fib(0)=0, fib(1)=1, each is the sum of the previous two.',
+    starter: 'def fib(n):\n    # your code here\n    pass\n',
+    tests: [{ args: [0], expected: 0 }, { args: [1], expected: 1 }, { args: [7], expected: 13 }, { args: [10], expected: 55 }],
+    hints: ['Iterate keeping the last two values: a, b = b, a + b.'],
   },
   {
     id: 'py-fizzbuzz', lang: 'py', title: 'FizzBuzz (Python)', difficulty: 'medium', fn: 'fizzbuzz',
@@ -63,3 +176,4 @@ export const CHALLENGES = [
 ]
 
 export const CHALLENGE_LANGS = { js: 'JavaScript', py: 'Python' }
+export const DIFFICULTIES = ['easy', 'medium', 'hard']

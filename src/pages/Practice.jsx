@@ -3,9 +3,9 @@ import { useApp } from '../context/AppData'
 import { PageHead, Card, Tag } from '../components/ui'
 import ChallengeRunner from '../components/ChallengeRunner'
 import QuizRunner from '../components/QuizRunner'
-import { CHALLENGES, CHALLENGE_LANGS } from '../lib/practice/challenges'
+import { CHALLENGES, CHALLENGE_LANGS, DIFFICULTIES } from '../lib/practice/challenges'
 import { QUIZZES, QUIZ_TOPICS } from '../lib/practice/quizzes'
-import { LESSONS } from '../lib/practice/lessons'
+import { LESSONS, LESSON_TOPICS } from '../lib/practice/lessons'
 import { dailyChallenge } from '../lib/practice/daily'
 import { todayKey } from '../lib/dates'
 import { cx } from '../lib/util'
@@ -79,6 +79,8 @@ function QuizTab() {
 function ChallengesTab() {
   const { data } = useApp()
   const [sel, setSel] = useState(null)
+  const [lang, setLang] = useState('All')
+  const [diff, setDiff] = useState('All')
 
   if (sel) {
     const ch = CHALLENGES.find((c) => c.id === sel)
@@ -91,25 +93,44 @@ function ChallengesTab() {
     )
   }
 
+  const filtered = CHALLENGES.filter(
+    (c) => (lang === 'All' || CHALLENGE_LANGS[c.lang] === lang) && (diff === 'All' || c.difficulty === diff),
+  )
+
   return (
-    <div className="grid cards">
-      {CHALLENGES.map((c) => {
-        const solved = data.practice.solved.includes(c.id)
-        return (
-          <Card key={c.id} className="card-pad clickable challenge-card" onClick={() => setSel(c.id)}>
-            <div className="row between wrap">
-              <div className="proj-name">{c.title}</div>
-              {solved && <Tag tone="good">✓</Tag>}
-            </div>
-            <div className="row gap wrap">
-              <Tag tone={c.lang === 'py' ? 'brand' : 'warn'}>{CHALLENGE_LANGS[c.lang]}</Tag>
-              <Tag>{c.difficulty}</Tag>
-            </div>
-            <p className="muted small">{c.prompt}</p>
-          </Card>
-        )
-      })}
-    </div>
+    <>
+      <div className="practice-filters">
+        <div className="row wrap gap">
+          {['All', 'JavaScript', 'Python'].map((l) => (
+            <button key={l} className={cx('chip', lang === l && 'on')} onClick={() => setLang(l)}>{l}</button>
+          ))}
+        </div>
+        <div className="row wrap gap">
+          {['All', ...DIFFICULTIES].map((d) => (
+            <button key={d} className={cx('chip', diff === d && 'on')} onClick={() => setDiff(d)}>{d}</button>
+          ))}
+        </div>
+        <div className="muted tiny">{data.practice.solved.length} solved · {filtered.length} shown</div>
+      </div>
+      <div className="grid cards">
+        {filtered.map((c) => {
+          const solved = data.practice.solved.includes(c.id)
+          return (
+            <Card key={c.id} className="card-pad clickable challenge-card" onClick={() => setSel(c.id)}>
+              <div className="row between wrap">
+                <div className="proj-name">{c.title}</div>
+                {solved && <Tag tone="good">✓</Tag>}
+              </div>
+              <div className="row gap wrap">
+                <Tag tone={c.lang === 'py' ? 'brand' : 'warn'}>{CHALLENGE_LANGS[c.lang]}</Tag>
+                <Tag>{c.difficulty}</Tag>
+              </div>
+              <p className="muted small">{c.prompt}</p>
+            </Card>
+          )
+        })}
+      </div>
+    </>
   )
 }
 
@@ -117,23 +138,29 @@ function LessonsTab() {
   const [open, setOpen] = useState(null)
   return (
     <div className="lesson-list">
-      {LESSONS.map((l) => (
-        <Card key={l.id} className="card-pad">
-          <button className="lesson-head" onClick={() => setOpen(open === l.id ? null : l.id)}>
-            <div>
-              <div className="lesson-title">{l.title}</div>
-              <span className="muted tiny">{l.topic}</span>
-            </div>
-            <span className="lesson-toggle">{open === l.id ? '−' : '+'}</span>
-          </button>
-          {open === l.id && (
-            <div className="lesson-body">
-              <p className="small">{l.body}</p>
-              <pre className="lesson-example">{l.example}</pre>
-            </div>
-          )}
-        </Card>
-      ))}
+      {LESSON_TOPICS.map((topic) => {
+        const items = LESSONS.filter((l) => l.topic === topic)
+        if (!items.length) return null
+        return (
+          <div key={topic} className="lesson-group">
+            <div className="lesson-group-title">{topic}</div>
+            {items.map((l) => (
+              <Card key={l.id} className="card-pad">
+                <button className="lesson-head" onClick={() => setOpen(open === l.id ? null : l.id)}>
+                  <div className="lesson-title">{l.title}</div>
+                  <span className="lesson-toggle">{open === l.id ? '−' : '+'}</span>
+                </button>
+                {open === l.id && (
+                  <div className="lesson-body">
+                    <p className="small">{l.body}</p>
+                    <pre className="lesson-example">{l.example}</pre>
+                  </div>
+                )}
+              </Card>
+            ))}
+          </div>
+        )
+      })}
     </div>
   )
 }
