@@ -38,6 +38,8 @@ Open the live URL, then:
 - **Android / desktop Chrome or Edge:** menu → **Install app** (or the install icon in the address bar). There's also an **Install** button in Settings.
 - **iPhone (Safari):** Share → **Add to Home Screen**.
 
+💡 **Settings → Install app** shows a scannable **QR code** + copy-link — handy for jumping from desktop to phone.
+
 Installs without a file download, works offline (service worker in `public/sw.js`), and opens full-screen like a native app. Requires the **https** site — install won't offer from a local file.
 
 ### 3. Desktop app (.exe / .dmg / AppImage)
@@ -54,15 +56,28 @@ npm start                     # or just run it in a dev window
 Windows produces an NSIS installer; `build.mac` / `build.linux` targets are configured too (build on the matching OS).
 
 ### 4. Android app (.apk) — for reliable closed-app notifications
-Capacitor project in `android/`. **Needs Android Studio** (it bundles JDK 17 + the Android SDK — this machine only has Java 8, so the APK can't be built from here).
+Capacitor project (regenerated into `android/`). Unlike the web/PWA build, the Android app uses **native local notifications** (`@capacitor/local-notifications`), so daily/weekly reminders fire **even when the app is fully closed** (and survive reboots). Two ways to get the APK:
+
+**A) Build in the cloud — recommended, no Android Studio needed.**
+`.github/workflows/android-apk.yml` builds a debug APK on GitHub's runners (which have JDK 17 + the Android SDK) and attaches it to a Release. Pushing CI files needs the `workflow` token scope, so enable it once:
 
 ```bash
-npm run build                 # build the web app
-npm run cap -- sync android   # copy the build into the android project
-npm run cap -- open android   # opens Android Studio → Build → Build APK / run on device
+gh auth refresh -s workflow                       # one-time, approve in browser
+git add -f .github/workflows/android-apk.yml
+git commit -m "Add Android APK build workflow"
+git push
+gh workflow run "Build Android APK"               # or: repo → Actions → Run workflow
 ```
 
-Unlike the web/PWA build, the Android app uses **native local notifications** (`@capacitor/local-notifications`), so daily/weekly reminders fire **even when the app is fully closed** (and survive reboots).
+Then on your phone, open the repo's **Releases → Pathway APK (latest)**, download `app-debug.apk`, and install (allow install from this source). It's debug-signed — fine for personal sideloading.
+
+**B) Build locally with Android Studio** (bundles JDK 17 + SDK; this machine only has Java 8):
+
+```bash
+npm run build
+npm run cap -- sync android
+npm run cap -- open android   # Android Studio → Build → Build APK / run on device
+```
 
 ---
 
