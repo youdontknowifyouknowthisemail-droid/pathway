@@ -4,6 +4,7 @@ import { useNotifications } from '../context/Notifications'
 import { PageHead, Card, Toggle, Field } from '../components/ui'
 import { downloadBackup, parseImport } from '../lib/storage'
 import { useInstallPrompt } from '../hooks/useInstallPrompt'
+import InstallQR from '../components/InstallQR'
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
@@ -43,16 +44,17 @@ export default function Settings() {
         <div className="card-title">Install app</div>
         {installed ? (
           <p className="muted small">✅ Pathway is installed and runs offline.</p>
-        ) : canInstall ? (
-          <>
-            <p className="muted small">Add Pathway to your home screen / desktop. It works offline and opens like a native app — no app store needed.</p>
-            <button className="btn primary" onClick={install} style={{ marginTop: 4 }}>⬇ Install Pathway</button>
-          </>
         ) : (
-          <p className="muted small">
-            To install: open the hosted (https) site in Chrome or Edge — desktop or Android — and choose <b>Install app</b>.
-            On iPhone, use Safari → Share → <b>Add to Home Screen</b>.
-          </p>
+          <>
+            <p className="muted small">Add Pathway to your home screen / desktop — it works offline and opens like a native app, no app store needed.</p>
+            {canInstall && (
+              <button className="btn primary" onClick={install} style={{ margin: '4px 0 12px' }}>⬇ Install on this device</button>
+            )}
+            <InstallQR />
+            <p className="muted tiny" style={{ marginTop: 10 }}>
+              On iPhone, open the link in <b>Safari</b> → Share → <b>Add to Home Screen</b>. On Android / desktop Chrome or Edge, choose <b>Install app</b> from the menu.
+            </p>
+          </>
         )}
       </Card>
 
