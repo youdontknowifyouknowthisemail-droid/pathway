@@ -1,0 +1,25 @@
+# dependencies
+node_modules
+desktop/node_modules
+
+# builds
+dist
+dist-ssr
+desktop/dist
+*.exe
+*.apk
+*.aab
+
+# native projects (regenerate with: npx cap add android / add ios)
+android/
+ios/
+.gradle
+
+# misc
+.DS_Store
+*.local
+*.log
+.vite
+
+# CI workflow needs the 'workflow' OAuth scope to push — kept local until enabled
+.github/workflows/

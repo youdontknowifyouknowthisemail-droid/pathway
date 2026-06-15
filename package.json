@@ -1,0 +1,27 @@
+{
+  "name": "pathway",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Personal coding-learning tracker — from now until university.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "icons": "node scripts/gen-icons.mjs"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.4.0",
+    "@capacitor/cli": "^8.4.0",
+    "@capacitor/core": "^8.4.0",
+    "@capacitor/local-notifications": "^8.2.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-router-dom": "^7.16.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.1",
+    "sharp": "^0.35.1",
+    "vite": "^8.0.12"
+  }
+}

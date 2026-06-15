@@ -1,0 +1,24 @@
+import { Routes, Route, Navigate } from 'react-router-dom'
+import Layout from './components/Layout'
+import Dashboard from './pages/Dashboard'
+import Curriculum from './pages/Curriculum'
+import Projects from './pages/Projects'
+import Goals from './pages/Goals'
+import Journal from './pages/Journal'
+import Settings from './pages/Settings'
+
+export default function App() {
+  return (
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/curriculum" element={<Curriculum />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/goals" element={<Goals />} />
+        <Route path="/journal" element={<Journal />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Layout>
+  )
+}

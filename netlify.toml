@@ -1,0 +1,11 @@
+# Netlify config (alternative host). Drag the built dist/ folder onto
+# app.netlify.com/drop, or connect this repo and Netlify will use this.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# SPA fallback (harmless with HashRouter; future-proofs a switch to BrowserRouter)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
