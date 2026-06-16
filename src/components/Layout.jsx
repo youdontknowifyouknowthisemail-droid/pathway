@@ -10,6 +10,7 @@ const NAV = [
   { to: '/projects', ic: '🧩', label: 'Projects' },
   { to: '/goals', ic: '🎯', label: 'Goals' },
   { to: '/journal', ic: '📓', label: 'Journal' },
+  { to: '/stats', ic: '📊', label: 'Stats' },
   { to: '/settings', ic: '⚙️', label: 'Settings' },
 ]
 
@@ -17,7 +18,7 @@ const THEMES = ['dark', 'light', 'auto']
 const themeIcon = (t) => (t === 'dark' ? '🌙' : t === 'light' ? '☀️' : '🌓')
 
 export default function Layout({ children }) {
-  const { phase, streak } = useApp()
+  const { phase, streak, level } = useApp()
   const [theme, setTheme] = useState(() => localStorage.getItem('pathway-theme') || 'dark')
   const [navOpen, setNavOpen] = useState(false)
 
@@ -52,8 +53,8 @@ export default function Layout({ children }) {
         </nav>
         <div className="sidefoot">
           <div className="sidefoot-streak">
-            <span>🔥 Current streak</span>
-            <b>{streak.current}d</b>
+            <span>⭐ Level {level.level}</span>
+            <b>{streak.current}d 🔥</b>
           </div>
           <div className="muted tiny">{phase.icon} Phase {phase.id} · {phase.name}</div>
         </div>

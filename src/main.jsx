@@ -3,8 +3,10 @@ import { createRoot } from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
 import { AppProvider } from './context/AppData.jsx'
 import { NotificationsProvider } from './context/Notifications.jsx'
+import { ToastProvider } from './context/Toast.jsx'
 
 // Apply the saved theme before first paint (default to dark — used mostly at night).
 const theme = localStorage.getItem('pathway-theme') || 'dark'
@@ -17,12 +19,16 @@ if ('serviceWorker' in navigator && import.meta.env.PROD && /^https?:$/.test(loc
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <HashRouter>
-      <AppProvider>
-        <NotificationsProvider>
-          <App />
-        </NotificationsProvider>
-      </AppProvider>
-    </HashRouter>
+    <ErrorBoundary>
+      <HashRouter>
+        <ToastProvider>
+          <AppProvider>
+            <NotificationsProvider>
+              <App />
+            </NotificationsProvider>
+          </AppProvider>
+        </ToastProvider>
+      </HashRouter>
+    </ErrorBoundary>
   </StrictMode>,
 )

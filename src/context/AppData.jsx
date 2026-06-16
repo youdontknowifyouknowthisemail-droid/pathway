@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { loadData, saveData } from '../lib/storage'
 import { SEED } from '../lib/seed'
 import { computeStreak, currentPhase, todayKey } from '../lib/dates'
+import { levelInfo, XP } from '../lib/practice/achievements'
 import { uid } from '../lib/util'
 
 const Ctx = createContext(null)
@@ -59,12 +60,17 @@ export function AppProvider({ children }) {
 
       // Curriculum
       toggleCurriculum(id) {
-        setData((d) => ({
-          ...d,
-          curriculum: d.curriculum.map((c) =>
-            c.id === id ? { ...c, done: !c.done, date: !c.done ? todayKey() : null } : c,
-          ),
-        }))
+        setData((d) => {
+          const item = d.curriculum.find((c) => c.id === id)
+          const awarding = item && !item.done
+          return {
+            ...d,
+            curriculum: d.curriculum.map((c) =>
+              c.id === id ? { ...c, done: !c.done, date: !c.done ? todayKey() : null } : c,
+            ),
+            practice: awarding ? { ...d.practice, xp: (d.practice.xp || 0) + XP.curriculum } : d.practice,
+          }
+        })
       },
       addCurriculum(course, title) {
         if (!title.trim()) return
@@ -109,20 +115,33 @@ export function AppProvider({ children }) {
 
       // Practice
       recordQuiz(correct) {
-        setData((d) => ({ ...d, practice: { ...d.practice, quizAnswered: d.practice.quizAnswered + 1, quizCorrect: d.practice.quizCorrect + (correct ? 1 : 0) } }))
+        setData((d) => ({ ...d, practice: { ...d.practice, quizAnswered: d.practice.quizAnswered + 1, quizCorrect: d.practice.quizCorrect + (correct ? 1 : 0), xp: (d.practice.xp || 0) + (correct ? XP.quiz : 0) } }))
       },
       solveChallenge(id) {
         setData((d) => {
-          const solved = d.practice.solved.includes(id) ? d.practice.solved : [...d.practice.solved, id]
-          return { ...d, practice: { ...d.practice, solved }, daily: markToday(d.daily, 'Solved a code challenge') }
+          const newly = !d.practice.solved.includes(id)
+          const solved = newly ? [...d.practice.solved, id] : d.practice.solved
+          return { ...d, practice: { ...d.practice, solved, xp: (d.practice.xp || 0) + (newly ? XP.challenge : 0) }, daily: markToday(d.daily, 'Solved a code challenge') }
         })
       },
       completeDaily(dateKey) {
-        setData((d) => ({
-          ...d,
-          practice: { ...d.practice, dailyDone: { ...d.practice.dailyDone, [dateKey]: true } },
-          daily: markToday(d.daily, 'Daily dose of code'),
-        }))
+        setData((d) => {
+          const already = d.practice.dailyDone[dateKey]
+          return {
+            ...d,
+            practice: { ...d.practice, dailyDone: { ...d.practice.dailyDone, [dateKey]: true }, xp: (d.practice.xp || 0) + (already ? 0 : XP.daily) },
+            daily: markToday(d.daily, 'Daily dose of code'),
+          }
+        })
+      },
+      unlockAchievements(ids) {
+        setData((d) => {
+          const cur = d.achievements || {}
+          const next = { ...cur }
+          let changed = false
+          for (const id of ids) if (!next[id]) { next[id] = todayKey(); changed = true }
+          return changed ? { ...d, achievements: next } : d
+        })
       },
 
       // Settings
@@ -142,8 +161,10 @@ export function AppProvider({ children }) {
 
   const streak = useMemo(() => computeStreak(data.daily), [data.daily])
   const phase = currentPhase()
+  const level = levelInfo(data.practice.xp || 0)
 
-  const value = useMemo(() => ({ data, streak, phase, ...actions }), [data, streak, phase, actions])
+  // level is derived from data, so [data] in deps keeps the cached value correct.
+  const value = useMemo(() => ({ data, streak, phase, level, ...actions }), [data, streak, phase, actions])
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }

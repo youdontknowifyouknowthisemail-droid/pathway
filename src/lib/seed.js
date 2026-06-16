@@ -36,7 +36,8 @@ export function SEED() {
   return {
     daily: {},
     journal: {},
-    practice: { quizAnswered: 0, quizCorrect: 0, solved: [], dailyDone: {} },
+    achievements: {},
+    practice: { quizAnswered: 0, quizCorrect: 0, solved: [], dailyDone: {}, xp: 0 },
     curriculum: [
       ...CS50X.map((t) => item('CS50x', t)),
       item('CS50x', 'Pay for verified certificate', { cert: true }),
@@ -77,6 +78,7 @@ export function SEED() {
       weeklyEnabled: true,
       weeklyTime: '14:00',
       weeklyDay: 0, // Sunday
+      onboarded: false,
     },
   }
 }

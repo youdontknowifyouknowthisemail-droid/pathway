@@ -30,6 +30,8 @@ function migrate(data) {
     ...base,
     ...data,
     settings: { ...base.settings, ...(data.settings || {}) },
+    practice: { ...base.practice, ...(data.practice || {}) },
+    achievements: { ...(base.achievements || {}), ...(data.achievements || {}) },
   }
 }
 

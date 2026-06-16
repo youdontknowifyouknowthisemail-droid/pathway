@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
 import { useApp } from '../context/AppData'
-import { PageHead, Card, Ring, Check } from '../components/ui'
+import { PageHead, Card, Ring, Check, Bar } from '../components/ui'
 import { dailyItem } from '../lib/practice/daily'
 import { CHALLENGES } from '../lib/practice/challenges'
 import { QUIZZES } from '../lib/practice/quizzes'
+import { ACHIEVEMENTS } from '../lib/practice/achievements'
 import Countdown from '../components/Countdown'
 import PhaseTimeline from '../components/PhaseTimeline'
 import Heatmap from '../components/Heatmap'
@@ -11,7 +12,7 @@ import ReminderBanner from '../components/ReminderBanner'
 import { KEY_DATES, todayKey, fmtDate } from '../lib/dates'
 
 export default function Dashboard() {
-  const { data, phase, streak, toggleToday, setDayNote } = useApp()
+  const { data, phase, streak, level, toggleToday, setDayNote } = useApp()
   const k = todayKey()
   const today = data.daily[k] || { done: false, note: '' }
   const nextItem = data.curriculum.find((c) => !c.done)
@@ -20,6 +21,9 @@ export default function Dashboard() {
   const doseLabel = dose?.type === 'challenge'
     ? `Today: ${CHALLENGES.find((c) => c.id === dose.id)?.title}`
     : `Today: a ${QUIZZES.find((q) => q.id === dose.id)?.topic} quiz`
+  const achUnlocked = data.achievements || {}
+  const achCount = Object.keys(achUnlocked).length
+  const achIcons = ACHIEVEMENTS.filter((a) => achUnlocked[a.id]).slice(0, 8).map((a) => a.icon)
 
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
@@ -73,6 +77,26 @@ export default function Dashboard() {
           </Ring>
           <div className="muted small streak-meta">Longest {streak.longest}d · {streak.total} days total</div>
         </Card>
+      </div>
+
+      <div className="grid two-col gamify-row">
+        <Card className="card-pad level-card">
+          <div className="row between">
+            <div className="card-title">⭐ Level {level.level}</div>
+            <span className="muted small">{level.total} XP</span>
+          </div>
+          <Bar value={level.pct * 100} color="var(--brand)" />
+          <div className="muted tiny">{level.intoLevel}/{level.perLevel} XP to level {level.level + 1}</div>
+        </Card>
+        <Link to="/stats" className="card card-pad clickable ach-card">
+          <div className="row between">
+            <div className="card-title">🏅 Achievements</div>
+            <span className="pill">{achCount}/{ACHIEVEMENTS.length}</span>
+          </div>
+          <div className="badge-strip">
+            {achIcons.length ? achIcons.map((ic, i) => <span key={i} className="badge-ic">{ic}</span>) : <span className="muted small">Earn your first badge by solving a challenge.</span>}
+          </div>
+        </Link>
       </div>
 
       <div className="grid two-col">

@@ -7,10 +7,15 @@ import Projects from './pages/Projects'
 import Goals from './pages/Goals'
 import Journal from './pages/Journal'
 import Settings from './pages/Settings'
+import Stats from './pages/Stats'
+import RetentionWatcher from './components/RetentionWatcher'
+import Onboarding from './components/Onboarding'
 
 export default function App() {
   return (
     <Layout>
+      <RetentionWatcher />
+      <Onboarding />
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/practice" element={<Practice />} />
@@ -18,6 +23,7 @@ export default function App() {
         <Route path="/projects" element={<Projects />} />
         <Route path="/goals" element={<Goals />} />
         <Route path="/journal" element={<Journal />} />
+        <Route path="/stats" element={<Stats />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
