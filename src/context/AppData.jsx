@@ -113,6 +113,11 @@ export function AppProvider({ children }) {
         setData((d) => ({ ...d, journal: { ...d.journal, [key]: text } }))
       },
 
+      // Calendar study-session plans
+      setPlan(key, text) {
+        setData((d) => ({ ...d, plans: { ...(d.plans || {}), [key]: text } }))
+      },
+
       // Practice
       recordQuiz(correct) {
         setData((d) => ({ ...d, practice: { ...d.practice, quizAnswered: d.practice.quizAnswered + 1, quizCorrect: d.practice.quizCorrect + (correct ? 1 : 0), xp: (d.practice.xp || 0) + (correct ? XP.quiz : 0) } }))

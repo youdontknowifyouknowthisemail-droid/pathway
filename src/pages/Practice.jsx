@@ -3,7 +3,7 @@ import { useApp } from '../context/AppData'
 import { PageHead, Card, Tag } from '../components/ui'
 import ChallengeRunner from '../components/ChallengeRunner'
 import QuizRunner from '../components/QuizRunner'
-import { CHALLENGES, CHALLENGE_LANGS, DIFFICULTIES } from '../lib/practice/challenges'
+import { CHALLENGES, CHALLENGE_LANGS, LANG_TONE, DIFFICULTIES } from '../lib/practice/challenges'
 import { QUIZZES, QUIZ_TOPICS } from '../lib/practice/quizzes'
 import { LESSONS, LESSON_TOPICS } from '../lib/practice/lessons'
 import { dailyItem } from '../lib/practice/daily'
@@ -104,7 +104,7 @@ function ChallengesTab() {
     <>
       <div className="practice-filters">
         <div className="row wrap gap">
-          {['All', 'JavaScript', 'Python'].map((l) => (
+          {['All', 'JavaScript', 'Python', 'SQL'].map((l) => (
             <button key={l} className={cx('chip', lang === l && 'on')} onClick={() => setLang(l)}>{l}</button>
           ))}
         </div>
@@ -125,7 +125,7 @@ function ChallengesTab() {
                 {solved && <Tag tone="good">✓</Tag>}
               </div>
               <div className="row gap wrap">
-                <Tag tone={c.lang === 'py' ? 'brand' : 'warn'}>{CHALLENGE_LANGS[c.lang]}</Tag>
+                <Tag tone={LANG_TONE[c.lang]}>{CHALLENGE_LANGS[c.lang]}</Tag>
                 <Tag>{c.difficulty}</Tag>
               </div>
               <p className="muted small">{c.prompt}</p>

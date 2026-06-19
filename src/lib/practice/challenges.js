@@ -150,6 +150,20 @@ export const CHALLENGES = [
     tests: [{ args: [0], expected: 0 }, { args: [1], expected: 1 }, { args: [7], expected: 13 }, { args: [10], expected: 55 }],
     hints: ['Iterate keeping the last two values.'],
   },
+  {
+    id: 'js-clamp', lang: 'js', title: 'Clamp a number', difficulty: 'easy', fn: 'clamp',
+    prompt: 'Return n limited to the range [lo, hi].',
+    starter: 'function clamp(n, lo, hi) {\n  // your code here\n}\n',
+    tests: [{ args: [5, 0, 10], expected: 5 }, { args: [-3, 0, 10], expected: 0 }, { args: [20, 0, 10], expected: 10 }],
+    hints: ['Math.max(lo, Math.min(hi, n)).'],
+  },
+  {
+    id: 'js-repeat', lang: 'js', title: 'Repeat a string', difficulty: 'easy', fn: 'repeatStr',
+    prompt: 'Return the string s repeated n times. repeatStr("x", 0) → "".',
+    starter: 'function repeatStr(s, n) {\n  // your code here\n}\n',
+    tests: [{ args: ['ab', 3], expected: 'ababab' }, { args: ['x', 0], expected: '' }, { args: ['hi', 1], expected: 'hi' }],
+    hints: ['"ab".repeat(3) gives "ababab".'],
+  },
 
   // ===== Python =====
   {
@@ -271,7 +285,56 @@ export const CHALLENGES = [
     tests: [{ args: [5], expected: [1, 2, 'Fizz', 4, 'Buzz'] }, { args: [3], expected: [1, 2, 'Fizz'] }],
     hints: ['Check n % 15, then % 3, then % 5.'],
   },
+  {
+    id: 'py-clamp', lang: 'py', title: 'Clamp a number (Python)', difficulty: 'easy', fn: 'clamp',
+    prompt: 'Return n limited to the range [lo, hi].',
+    starter: 'def clamp(n, lo, hi):\n    # your code here\n    pass\n',
+    tests: [{ args: [5, 0, 10], expected: 5 }, { args: [-3, 0, 10], expected: 0 }, { args: [20, 0, 10], expected: 10 }],
+    hints: ['max(lo, min(hi, n)).'],
+  },
+  {
+    id: 'py-repeat', lang: 'py', title: 'Repeat a string (Python)', difficulty: 'easy', fn: 'repeat_str',
+    prompt: 'Return the string s repeated n times. repeat_str("x", 0) → "".',
+    starter: 'def repeat_str(s, n):\n    # your code here\n    pass\n',
+    tests: [{ args: ['ab', 3], expected: 'ababab' }, { args: ['x', 0], expected: '' }, { args: ['hi', 1], expected: 'hi' }],
+    hints: ['In Python, s * n repeats a string.'],
+  },
+
+  // ===== SQL =====
+  {
+    id: 'sql-all', lang: 'sql', title: 'Select all rows', difficulty: 'easy',
+    prompt: 'Select every column and row from the students table (columns: id, name, age).',
+    setup: "CREATE TABLE students(id INTEGER, name TEXT, age INTEGER); INSERT INTO students VALUES (1,'Ada',19),(2,'Linus',21),(3,'Grace',18);",
+    starter: '-- write your query below\n',
+    expected: { columns: ['id', 'name', 'age'], values: [[1, 'Ada', 19], [2, 'Linus', 21], [3, 'Grace', 18]] },
+    hints: ['SELECT * FROM students;'],
+  },
+  {
+    id: 'sql-where', lang: 'sql', title: 'Filter with WHERE', difficulty: 'easy',
+    prompt: 'Select all columns (id, name, age) of students aged 19 or older.',
+    setup: "CREATE TABLE students(id INTEGER, name TEXT, age INTEGER); INSERT INTO students VALUES (1,'Ada',19),(2,'Linus',21),(3,'Grace',18);",
+    starter: '-- filter the rows\n',
+    expected: { columns: ['id', 'name', 'age'], values: [[1, 'Ada', 19], [2, 'Linus', 21]] },
+    hints: ['SELECT * FROM students WHERE age >= 19;'],
+  },
+  {
+    id: 'sql-order', lang: 'sql', title: 'Order results', difficulty: 'medium',
+    prompt: 'Select just the name column of every student, ordered alphabetically (A→Z).',
+    setup: "CREATE TABLE students(id INTEGER, name TEXT, age INTEGER); INSERT INTO students VALUES (1,'Ada',19),(2,'Linus',21),(3,'Grace',18);",
+    starter: '-- one column, sorted\n',
+    expected: { columns: ['name'], values: [['Ada'], ['Grace'], ['Linus']] },
+    hints: ['SELECT name FROM students ORDER BY name;'],
+  },
+  {
+    id: 'sql-count', lang: 'sql', title: 'Count rows', difficulty: 'medium',
+    prompt: 'Return the number of students as a single value.',
+    setup: "CREATE TABLE students(id INTEGER, name TEXT, age INTEGER); INSERT INTO students VALUES (1,'Ada',19),(2,'Linus',21),(3,'Grace',18);",
+    starter: '-- use an aggregate function\n',
+    expected: { columns: ['count'], values: [[3]] },
+    hints: ['SELECT COUNT(*) FROM students;'],
+  },
 ]
 
-export const CHALLENGE_LANGS = { js: 'JavaScript', py: 'Python' }
+export const CHALLENGE_LANGS = { js: 'JavaScript', py: 'Python', sql: 'SQL' }
+export const LANG_TONE = { js: 'warn', py: 'brand', sql: 'good' }
 export const DIFFICULTIES = ['easy', 'medium', 'hard']

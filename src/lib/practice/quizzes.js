@@ -97,4 +97,19 @@ export const QUIZZES = [
   { id: 'cs-and', topic: 'CS', difficulty: 'easy', q: 'What is (true AND false)?', options: ['true', 'false', 'error', 'null'], answer: 1, explain: 'AND is true only when both operands are true.' },
   { id: 'cs-recursion', topic: 'CS', difficulty: 'medium', q: 'A function that calls itself is…', options: ['iterative', 'recursive', 'static', 'asynchronous'], answer: 1, explain: 'Recursion solves a problem in terms of smaller versions of itself.' },
   { id: 'cs-linear', topic: 'CS', difficulty: 'medium', q: 'Worst case of linear search over n items?', options: ['O(1)', 'O(log n)', 'O(n)', 'O(n²)'], answer: 2, explain: 'You may need to check every element → O(n).' },
+
+  // ---- more ----
+  { id: 'py-falsy', topic: 'Python', difficulty: 'medium', q: 'Which of these is falsy in Python?', options: ['"0"', '[]', '"False"', '1'], answer: 1, explain: 'An empty list [] is falsy. Non-empty strings (even "0"/"False") are truthy.' },
+  { id: 'py-comment', topic: 'Python', difficulty: 'easy', q: 'How do you start a comment in Python?', options: ['//', '#', '/*', '--'], answer: 1, explain: '# begins a comment to the end of the line.' },
+  { id: 'js-filter', topic: 'JavaScript', difficulty: 'medium', q: 'What is [1,2,3,4].filter(x => x % 2 === 0)?', options: ['[2, 4]', '[1, 3]', '[2, 4, 6]', '2'], answer: 0, explain: 'filter keeps elements where the test is true — the even numbers.' },
+  { id: 'js-concat', topic: 'JavaScript', difficulty: 'easy', q: 'What is "a" + "b" in JavaScript?', options: ['"ab"', '"a b"', 'Error', '2'], answer: 0, explain: '+ concatenates strings → "ab".' },
+  { id: 'html-head', topic: 'HTML', difficulty: 'easy', q: 'Which tag holds metadata not shown on the page?', options: ['<body>', '<head>', '<main>', '<footer>'], answer: 1, explain: '<head> holds title/meta/links; <body> holds visible content.' },
+  { id: 'html-strong', topic: 'HTML', difficulty: 'medium', q: 'Which marks text as important (and bold)?', options: ['<b>', '<strong>', '<big>', '<bold>'], answer: 1, explain: '<strong> conveys importance semantically; <b> is just visual bold.' },
+  { id: 'css-padding', topic: 'CSS', difficulty: 'medium', q: 'Padding is the space…', options: ['outside the border', 'inside the border, around the content', 'between letters', 'around the page'], answer: 1, explain: 'Padding sits between content and border; margin is outside the border.' },
+  { id: 'css-bg', topic: 'CSS', difficulty: 'easy', q: 'Which property sets the background colour?', options: ['color', 'background-color', 'fill', 'bgcolor'], answer: 1, explain: 'background-color sets the background; color sets the text colour.' },
+  { id: 'sql-update', topic: 'SQL', difficulty: 'easy', q: 'Which statement changes existing rows?', options: ['ALTER', 'UPDATE', 'MODIFY', 'CHANGE'], answer: 1, explain: 'UPDATE … SET … WHERE … edits rows. ALTER changes table structure.' },
+  { id: 'sql-delete', topic: 'SQL', difficulty: 'medium', q: 'Which removes rows from a table?', options: ['DROP', 'DELETE', 'REMOVE', 'CLEAR'], answer: 1, explain: 'DELETE removes rows; DROP removes the entire table.' },
+  { id: 'c-while', topic: 'C', difficulty: 'easy', q: 'Which is a loop keyword in C?', options: ['repeat', 'while', 'foreach', 'loop'], answer: 1, explain: 'C has for, while, and do-while loops.' },
+  { id: 'git-init', topic: 'Git', difficulty: 'easy', q: 'Which command creates a new repository?', options: ['git start', 'git init', 'git new', 'git create'], answer: 1, explain: 'git init initialises a new repo in the current folder.' },
+  { id: 'cs-index', topic: 'CS', difficulty: 'medium', q: 'Accessing an array element by index is…', options: ['O(n)', 'O(1)', 'O(log n)', 'O(n²)'], answer: 1, explain: 'Arrays give constant-time O(1) access by index.' },
 ]

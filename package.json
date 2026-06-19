@@ -19,6 +19,7 @@
     "@capacitor/local-notifications": "^8.2.0",
     "@codemirror/lang-javascript": "^6.2.5",
     "@codemirror/lang-python": "^6.2.1",
+    "@codemirror/lang-sql": "^6.10.0",
     "@uiw/react-codemirror": "^4.25.10",
     "qrcode": "^1.5.4",
     "react": "^19.2.6",

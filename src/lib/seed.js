@@ -36,6 +36,7 @@ export function SEED() {
   return {
     daily: {},
     journal: {},
+    plans: {},
     achievements: {},
     practice: { quizAnswered: 0, quizCorrect: 0, solved: [], dailyDone: {}, xp: 0 },
     curriculum: [

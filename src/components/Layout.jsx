@@ -12,6 +12,7 @@ const NAV = [
   { to: '/goals', ic: '🎯', label: 'Goals' },
   { to: '/journal', ic: '📓', label: 'Journal' },
   { to: '/stats', ic: '📊', label: 'Stats' },
+  { to: '/help', ic: '📖', label: 'Guide' },
   { to: '/settings', ic: '⚙️', label: 'Settings' },
 ]
 

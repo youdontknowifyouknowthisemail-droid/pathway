@@ -8,7 +8,7 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 const DOW = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 
 export default function Calendar() {
-  const { data, setDay } = useApp()
+  const { data, setDay, setPlan } = useApp()
   const today = new Date()
   const tKey = todayKey()
   const [ym, setYm] = useState({ y: today.getFullYear(), m: today.getMonth() })
@@ -60,6 +60,7 @@ export default function Calendar() {
             const k = keyOf(d)
             const done = !!data.daily[k]?.done
             const hasJournal = !!data.journal[k]?.trim()
+            const planned = !!data.plans?.[k]?.trim()
             const kd = keyDates[k]
             return (
               <button
@@ -73,6 +74,7 @@ export default function Calendar() {
                 <span className="cal-marks">
                   {done && <i className="cal-dot done" />}
                   {hasJournal && <i className="cal-dot note" />}
+                  {planned && <i className="cal-dot plan" />}
                 </span>
               </button>
             )
@@ -82,6 +84,7 @@ export default function Calendar() {
         <div className="cal-legend muted tiny">
           <span><i className="cal-dot done" /> practiced</span>
           <span><i className="cal-dot note" /> journal</span>
+          <span><i className="cal-dot plan" /> planned</span>
           <span>📝🎓 key dates</span>
         </div>
       </Card>
@@ -95,6 +98,10 @@ export default function Calendar() {
           <div className="muted small">{sel.done ? '✓ Practiced this day' : selPast ? 'Not marked as practiced' : 'Upcoming day'}</div>
           {selPast && <button className="btn sm" onClick={() => setDay(selected, { done: !sel.done })}>{sel.done ? 'Unmark' : 'Mark practiced'}</button>}
         </div>
+        <label className="field" style={{ marginTop: 12 }}>
+          <span className="field-label">📌 Plan a study session</span>
+          <input className="input" value={data.plans?.[selected] || ''} onChange={(e) => setPlan(selected, e.target.value)} placeholder="e.g. CS50 Week 3 pset, revise SQL joins…" />
+        </label>
         {sel.note && <div className="muted small" style={{ marginTop: 8 }}>📝 {sel.note}</div>}
         {selJournal && <div className="cal-journal muted small">{selJournal}</div>}
         {!sel.note && !selJournal && selPast && <div className="muted tiny" style={{ marginTop: 8 }}>No note yet — add reflections in the Journal.</div>}
