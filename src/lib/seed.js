@@ -79,6 +79,7 @@ export function SEED() {
       weeklyEnabled: true,
       weeklyTime: '14:00',
       weeklyDay: 0, // Sunday
+      weeklyGoal: 5,
       onboarded: false,
       links: { github: '', edx: '', other: '' },
     },

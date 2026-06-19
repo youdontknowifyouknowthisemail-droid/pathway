@@ -8,7 +8,7 @@ import { cx } from '../lib/util'
 const CH_LANG = Object.fromEntries(CHALLENGES.map((c) => [c.id, c.lang]))
 
 export default function Stats() {
-  const { data, streak, level } = useApp()
+  const { data, streak, level, setSettings } = useApp()
   const solved = data.practice.solved
   const jsSolved = solved.filter((id) => CH_LANG[id] === 'js').length
   const pySolved = solved.filter((id) => CH_LANG[id] === 'py').length
@@ -24,6 +24,8 @@ export default function Stats() {
     const k = keyOf(d)
     week.push({ k, label: 'SMTWTFS'[d.getDay()], done: !!data.daily[k]?.done })
   }
+  const weekDone = week.filter((d) => d.done).length
+  const goal = data.settings.weeklyGoal || 5
 
   const stats = [
     { label: 'Current streak', value: `${streak.current}d`, icon: '🔥' },
@@ -70,6 +72,13 @@ export default function Stats() {
             </div>
           ))}
         </div>
+        <div className="row between wrap" style={{ marginTop: 12 }}>
+          <div className="muted small">Weekly goal: <b>{weekDone}/{goal}</b> days{weekDone >= goal ? ' 🎉' : ''}</div>
+          <select className="input" style={{ width: 'auto' }} value={goal} onChange={(e) => setSettings({ weeklyGoal: Number(e.target.value) })}>
+            {[3, 4, 5, 6, 7].map((n) => <option key={n} value={n}>{n} days/week</option>)}
+          </select>
+        </div>
+        <Bar value={Math.min(100, (weekDone / goal) * 100)} color={weekDone >= goal ? 'var(--good)' : 'var(--brand)'} />
         <div className="muted small" style={{ marginTop: 8 }}>Solved: {jsSolved} JavaScript · {pySolved} Python</div>
       </Card>
 

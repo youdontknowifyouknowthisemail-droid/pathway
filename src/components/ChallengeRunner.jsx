@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useApp } from '../context/AppData'
 import CodeEditor from './CodeEditor'
 import { runJS } from '../lib/runners/jsRunner'
 import { runPy } from '../lib/runners/pyRunner'
 import { runSql } from '../lib/runners/sqlRunner'
+import { runHtmlChecks } from '../lib/runners/htmlChecks'
 import { CHALLENGE_LANGS, LANG_TONE } from '../lib/practice/challenges'
 import { cx } from '../lib/util'
 
@@ -37,7 +38,9 @@ export default function ChallengeRunner({ challenge, onSolved }) {
   const [running, setRunning] = useState(false)
   const [out, setOut] = useState(null)
   const [showHints, setShowHints] = useState(false)
+  const frameRef = useRef(null)
   const isSql = challenge.lang === 'sql'
+  const isHtml = challenge.lang === 'html'
   const alreadySolved = data.practice.solved.includes(challenge.id)
 
   useEffect(() => {
@@ -52,7 +55,10 @@ export default function ChallengeRunner({ challenge, onSolved }) {
     setOut(null)
     setStatus('Running…')
     let res
-    if (isSql) {
+    if (isHtml) {
+      const doc = frameRef.current?.contentDocument
+      res = doc ? { checks: runHtmlChecks(doc, challenge.checks) } : { error: 'Preview not ready — try again.' }
+    } else if (isSql) {
       res = await runSql({ setup: challenge.setup, query: code, onStatus: setStatus })
       if (!res.error) res.pass = JSON.stringify(sortRows(res.values)) === JSON.stringify(sortRows(challenge.expected.values))
     } else if (challenge.lang === 'py') {
@@ -63,14 +69,19 @@ export default function ChallengeRunner({ challenge, onSolved }) {
     setRunning(false)
     setStatus('')
     setOut(res)
-    const passed = isSql ? res.pass : res.results && res.results.length && res.results.every((r) => r.pass)
+    const passed = isHtml
+      ? res.checks && res.checks.every((c) => c.pass)
+      : isSql
+      ? res.pass
+      : res.results && res.results.length && res.results.every((r) => r.pass)
     if (passed) {
       solveChallenge(challenge.id)
       onSolved && onSolved(challenge.id)
     }
   }
 
-  const allPass = !isSql && out?.results && out.results.every((r) => r.pass)
+  const runLabel = isHtml ? '▶ Run checks' : isSql ? '▶ Run query' : '▶ Run tests'
+  const allPass = !isSql && !isHtml && out?.results && out.results.every((r) => r.pass)
   const passCount = out?.results ? out.results.filter((r) => r.pass).length : 0
 
   return (
@@ -84,8 +95,10 @@ export default function ChallengeRunner({ challenge, onSolved }) {
 
       <CodeEditor value={code} onChange={setCode} language={challenge.lang} />
 
+      {isHtml && <iframe ref={frameRef} className="html-preview" title="Live preview" sandbox="allow-same-origin" srcDoc={code} />}
+
       <div className="row gap wrap runner-actions">
-        <button className="btn primary" onClick={run} disabled={running}>{running ? (status || 'Running…') : (isSql ? '▶ Run query' : '▶ Run tests')}</button>
+        <button className="btn primary" onClick={run} disabled={running}>{running ? (status || 'Running…') : runLabel}</button>
         <button className="btn" onClick={() => { setCode(challenge.starter); setOut(null) }} disabled={running}>Reset</button>
         {challenge.hints?.length > 0 && (
           <button className="btn ghost" onClick={() => setShowHints((s) => !s)}>{showHints ? 'Hide hint' : '💡 Hint'}</button>
@@ -95,6 +108,20 @@ export default function ChallengeRunner({ challenge, onSolved }) {
       {showHints && <ul className="hints">{challenge.hints.map((h, i) => <li key={i} className="muted small">{h}</li>)}</ul>}
 
       {out?.error && <pre className="run-error">{out.error}</pre>}
+
+      {isHtml && out?.checks && (
+        <div className="results">
+          <div className={cx('results-head', out.checks.every((c) => c.pass) ? 'pass' : 'fail')}>
+            {out.checks.every((c) => c.pass) ? '✓ All checks passed — solved!' : `${out.checks.filter((c) => c.pass).length}/${out.checks.length} checks passed`}
+          </div>
+          {out.checks.map((c, i) => (
+            <div key={i} className={cx('test', c.pass ? 'pass' : 'fail')}>
+              <span className="test-ic">{c.pass ? '✓' : '✕'}</span>
+              <span>{c.desc}</span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {isSql && out && !out.error && (
         <div className="results">
@@ -110,7 +137,7 @@ export default function ChallengeRunner({ challenge, onSolved }) {
         </div>
       )}
 
-      {!isSql && out?.results && (
+      {!isSql && !isHtml && out?.results && (
         <div className="results">
           <div className={cx('results-head', allPass ? 'pass' : 'fail')}>
             {allPass ? '✓ All tests passed — challenge solved!' : `${passCount}/${out.results.length} tests passed`}

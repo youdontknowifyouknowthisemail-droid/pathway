@@ -333,8 +333,62 @@ export const CHALLENGES = [
     expected: { columns: ['count'], values: [[3]] },
     hints: ['SELECT COUNT(*) FROM students;'],
   },
+  {
+    id: 'sql-join', lang: 'sql', title: 'Join two tables', difficulty: 'medium',
+    prompt: "Join students and grades to list each student's name with their subject and score (columns: name, subject, score).",
+    setup: "CREATE TABLE students(id INTEGER, name TEXT); INSERT INTO students VALUES (1,'Ada'),(2,'Linus'); CREATE TABLE grades(student_id INTEGER, subject TEXT, score INTEGER); INSERT INTO grades VALUES (1,'Math',90),(1,'CS',95),(2,'Math',80);",
+    starter: '-- join students and grades\n',
+    expected: { columns: ['name', 'subject', 'score'], values: [['Ada', 'Math', 90], ['Ada', 'CS', 95], ['Linus', 'Math', 80]] },
+    hints: ['SELECT s.name, g.subject, g.score FROM students s JOIN grades g ON s.id = g.student_id;'],
+  },
+  {
+    id: 'sql-groupcount', lang: 'sql', title: 'GROUP BY with COUNT', difficulty: 'medium',
+    prompt: 'Show how many grades each student has (columns: name, count).',
+    setup: "CREATE TABLE students(id INTEGER, name TEXT); INSERT INTO students VALUES (1,'Ada'),(2,'Linus'); CREATE TABLE grades(student_id INTEGER, subject TEXT, score INTEGER); INSERT INTO grades VALUES (1,'Math',90),(1,'CS',95),(2,'Math',80);",
+    starter: '-- count grades per student\n',
+    expected: { columns: ['name', 'count'], values: [['Ada', 2], ['Linus', 1]] },
+    hints: ['SELECT s.name, COUNT(*) FROM students s JOIN grades g ON s.id = g.student_id GROUP BY s.name;'],
+  },
+  {
+    id: 'sql-groupsum', lang: 'sql', title: 'GROUP BY with SUM', difficulty: 'hard',
+    prompt: 'For each student name, show their total score across all subjects (columns: name, total).',
+    setup: "CREATE TABLE students(id INTEGER, name TEXT); INSERT INTO students VALUES (1,'Ada'),(2,'Linus'); CREATE TABLE grades(student_id INTEGER, subject TEXT, score INTEGER); INSERT INTO grades VALUES (1,'Math',90),(1,'CS',95),(2,'Math',80);",
+    starter: '-- total score per student\n',
+    expected: { columns: ['name', 'total'], values: [['Ada', 185], ['Linus', 80]] },
+    hints: ['SELECT s.name, SUM(g.score) AS total FROM students s JOIN grades g ON s.id = g.student_id GROUP BY s.name;'],
+  },
+
+  // ===== HTML / CSS (live preview) =====
+  {
+    id: 'html-heading', lang: 'html', title: 'A heading', difficulty: 'easy',
+    prompt: 'Add a level-1 heading (<h1>) with the text "Hello".',
+    starter: '<!-- write your HTML below -->\n',
+    checks: [{ desc: 'There is an <h1>', selector: 'h1' }, { desc: 'The <h1> contains "Hello"', selector: 'h1', text: 'Hello' }],
+    hints: ['<h1>Hello</h1>'],
+  },
+  {
+    id: 'html-list', lang: 'html', title: 'An unordered list', difficulty: 'easy',
+    prompt: 'Create an unordered list (<ul>) containing exactly 3 items (<li>).',
+    starter: '<!-- a ul with three li items -->\n',
+    checks: [{ desc: 'There is a <ul>', selector: 'ul' }, { desc: 'It has 3 <li> items', selector: 'ul li', minCount: 3 }],
+    hints: ['<ul>\n  <li>One</li>\n  <li>Two</li>\n  <li>Three</li>\n</ul>'],
+  },
+  {
+    id: 'html-link', lang: 'html', title: 'A link', difficulty: 'easy',
+    prompt: 'Add a link (<a>) that points to https://example.com.',
+    starter: '<!-- add an anchor -->\n',
+    checks: [{ desc: 'There is a link', selector: 'a' }, { desc: 'It points to example.com', selector: 'a[href*="example.com"]' }],
+    hints: ['<a href="https://example.com">Visit</a>'],
+  },
+  {
+    id: 'css-color', lang: 'html', title: 'Colour with CSS', difficulty: 'medium',
+    prompt: 'Use CSS to make the heading text red.',
+    starter: '<h1>Style me</h1>\n<style>\n  /* make the h1 red */\n</style>\n',
+    checks: [{ desc: 'The <h1> exists', selector: 'h1' }, { desc: 'The <h1> text is red', selector: 'h1', style: { prop: 'color', value: 'rgb(255, 0, 0)' } }],
+    hints: ['h1 { color: red; }'],
+  },
 ]
 
-export const CHALLENGE_LANGS = { js: 'JavaScript', py: 'Python', sql: 'SQL' }
-export const LANG_TONE = { js: 'warn', py: 'brand', sql: 'good' }
+export const CHALLENGE_LANGS = { js: 'JavaScript', py: 'Python', sql: 'SQL', html: 'HTML/CSS' }
+export const LANG_TONE = { js: 'warn', py: 'brand', sql: 'good', html: '' }
 export const DIFFICULTIES = ['easy', 'medium', 'hard']

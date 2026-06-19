@@ -104,7 +104,7 @@ function ChallengesTab() {
     <>
       <div className="practice-filters">
         <div className="row wrap gap">
-          {['All', 'JavaScript', 'Python', 'SQL'].map((l) => (
+          {['All', 'JavaScript', 'Python', 'SQL', 'HTML/CSS'].map((l) => (
             <button key={l} className={cx('chip', lang === l && 'on')} onClick={() => setLang(l)}>{l}</button>
           ))}
         </div>

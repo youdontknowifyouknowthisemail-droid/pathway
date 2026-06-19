@@ -4,8 +4,9 @@ import CodeMirror from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
 import { python } from '@codemirror/lang-python'
 import { sql } from '@codemirror/lang-sql'
+import { html } from '@codemirror/lang-html'
 
-const EXT = { js: [javascript()], py: [python()], sql: [sql()] }
+const EXT = { js: [javascript()], py: [python()], sql: [sql()], html: [html()] }
 
 export default function CodeMirrorEditor({ value, onChange, language }) {
   return (
