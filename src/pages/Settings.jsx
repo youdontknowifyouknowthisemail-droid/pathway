@@ -13,6 +13,7 @@ export default function Settings() {
   const { supported, permission, request } = useNotifications()
   const { canInstall, installed, install } = useInstallPrompt()
   const s = data.settings
+  const links = s.links || {}
   const fileRef = useRef(null)
   const [msg, setMsg] = useState('')
 
@@ -96,6 +97,33 @@ export default function Settings() {
           <Field label="Time">
             <input className="input time" type="time" value={s.weeklyTime} onChange={(e) => setSettings({ weeklyTime: e.target.value })} disabled={!s.weeklyEnabled} />
           </Field>
+        </div>
+      </Card>
+
+      <Card className="card-pad">
+        <div className="card-title">Your links</div>
+        <p className="muted small">Handy links to your coding profiles — stored locally on this device.</p>
+        <Field label="GitHub"><input className="input" value={links.github || ''} onChange={(e) => setSettings({ links: { ...links, github: e.target.value } })} placeholder="https://github.com/you" /></Field>
+        <Field label="CS50 / edX"><input className="input" value={links.edx || ''} onChange={(e) => setSettings({ links: { ...links, edx: e.target.value } })} placeholder="https://cs50.harvard.edu/x/" /></Field>
+        <Field label="LeetCode / other"><input className="input" value={links.other || ''} onChange={(e) => setSettings({ links: { ...links, other: e.target.value } })} placeholder="https://…" /></Field>
+        {(links.github || links.edx || links.other) && (
+          <div className="row wrap gap" style={{ marginTop: 6 }}>
+            {links.github && <a className="btn sm" href={links.github} target="_blank" rel="noreferrer">GitHub ↗</a>}
+            {links.edx && <a className="btn sm" href={links.edx} target="_blank" rel="noreferrer">CS50 ↗</a>}
+            {links.other && <a className="btn sm" href={links.other} target="_blank" rel="noreferrer">Open ↗</a>}
+          </div>
+        )}
+        <div className="field-label" style={{ marginTop: 14 }}>Keep learning</div>
+        <div className="row wrap gap">
+          <a className="btn sm ghost" href="https://cs50.harvard.edu/x/" target="_blank" rel="noreferrer">CS50x</a>
+          <a className="btn sm ghost" href="https://exercism.org" target="_blank" rel="noreferrer">Exercism</a>
+          <a className="btn sm ghost" href="https://www.w3schools.com" target="_blank" rel="noreferrer">W3Schools</a>
+          <a className="btn sm ghost" href="https://developer.mozilla.org" target="_blank" rel="noreferrer">MDN</a>
+        </div>
+        <div className="field-label" style={{ marginTop: 14 }}>Share &amp; download</div>
+        <div className="row wrap gap">
+          <a className="btn sm" href="start.html" target="_blank" rel="noreferrer">📥 Download / share page</a>
+          <a className="btn sm ghost" href="https://github.com/youdontknowifyouknowthisemail-droid/pathway/releases" target="_blank" rel="noreferrer">APK releases ↗</a>
         </div>
       </Card>
 

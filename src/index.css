@@ -560,3 +560,25 @@ textarea.input { resize: vertical; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+/* ---- calendar ---- */
+.cal-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.cal-title { text-align: center; }
+.cal-month { font-weight: 700; font-size: 16px; }
+.cal-dow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 6px; }
+.cal-dow span { text-align: center; font-size: 11px; color: var(--muted); font-weight: 600; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.cal-cell { aspect-ratio: 1; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); color: var(--ink); cursor: pointer; position: relative; padding: 5px 6px; font-size: 13px; }
+.cal-cell.empty { background: transparent; border: 0; cursor: default; }
+.cal-cell.done { background: var(--good-soft); border-color: transparent; }
+.cal-cell.today { box-shadow: inset 0 0 0 2px var(--brand); }
+.cal-cell.sel { border-color: var(--brand); }
+.cal-num { font-weight: 600; }
+.cal-kd { position: absolute; top: 3px; right: 5px; font-size: 11px; }
+.cal-marks { position: absolute; bottom: 5px; left: 0; right: 0; display: flex; gap: 3px; justify-content: center; }
+.cal-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+.cal-dot.done { background: var(--good); }
+.cal-dot.note { background: var(--brand); }
+.cal-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
+.cal-legend span { display: flex; align-items: center; gap: 5px; }
+.cal-journal { background: var(--surface-2); border-radius: var(--radius-sm); padding: 8px 10px; margin-top: 8px; white-space: pre-wrap; }

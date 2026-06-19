@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pathway — get started</title>
+    <meta name="description" content="Pathway: a personal coding-learning tracker. Install on your phone, desktop, or use it in the browser." />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b1120; --surface: #131c2e; --surface2: #1b2740; --ink: #e8eef7; --muted: #8595ad;
+        --line: #243248; --brand: #38bdf8; --good: #34d399; --radius: 16px;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; }
+      a { color: var(--brand); }
+      main { max-width: 760px; margin: 0 auto; padding: 32px 20px 64px; }
+      .hero { text-align: center; padding: 24px 0 8px; }
+      .logo { width: 64px; height: 64px; border-radius: 16px; background: var(--surface2); border: 1px solid var(--line); display: inline-grid; place-items: center; font-size: 32px; }
+      h1 { font-size: 30px; margin: 16px 0 6px; }
+      .tag { color: var(--muted); font-size: 16px; margin: 0; }
+      .cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 24px 0; }
+      .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 20px; border-radius: 12px; font-weight: 700; text-decoration: none; font-size: 15px; border: 1px solid var(--line); background: var(--surface2); color: var(--ink); }
+      .btn.primary { background: var(--brand); color: #04121f; border-color: transparent; }
+      .btn.good { background: var(--good); color: #04241a; border-color: transparent; }
+      section { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; margin: 16px 0; }
+      h2 { font-size: 19px; margin: 0 0 12px; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+      .feat { background: var(--surface2); border-radius: 12px; padding: 14px; }
+      .feat b { display: block; }
+      .muted { color: var(--muted); }
+      ol { padding-left: 20px; } ol li { margin: 7px 0; }
+      .links { display: flex; flex-wrap: wrap; gap: 10px; }
+      .pill { background: var(--surface2); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; text-decoration: none; color: var(--ink); font-size: 14px; }
+      footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 24px; }
+      .note { font-size: 13px; color: var(--muted); }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="hero">
+        <div class="logo">📈</div>
+        <h1>Pathway</h1>
+        <p class="tag">Your personal coding-learning tracker — from now until university.</p>
+      </div>
+
+      <div class="cta">
+        <a class="btn primary" href="./">🚀 Launch the web app</a>
+        <a class="btn good" href="https://github.com/youdontknowifyouknowthisemail-droid/pathway/releases">📦 Download Android APK</a>
+      </div>
+      <p class="note" style="text-align:center">Works offline once opened · no account needed · your data stays on your device.</p>
+
+      <section>
+        <h2>Get it on your device</h2>
+        <div class="grid">
+          <div class="feat"><b>🌐 Web</b><span class="muted">Open the app link above — works in any modern browser, online or offline.</span></div>
+          <div class="feat"><b>📱 Phone (install)</b><span class="muted">Open the app, then: iPhone Safari → Share → <i>Add to Home Screen</i>; Android Chrome → menu → <i>Install app</i>. Also in Settings → Install.</span></div>
+          <div class="feat"><b>🤖 Android APK</b><span class="muted">Grab <code>app-release.apk</code> from the Releases page and install it (allow your browser/files to install).</span></div>
+          <div class="feat"><b>🖥️ Desktop</b><span class="muted">A Windows installer can be built from the repo (<code>desktop/</code>, electron-builder).</span></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>What's inside</h2>
+        <div class="grid">
+          <div class="feat"><b>📆 Calendar & timeline</b><span class="muted">Month view of your practice, key dates, and your 3-phase pathway to university.</span></div>
+          <div class="feat"><b>🧪 Daily dose</b><span class="muted">A rotating challenge or quiz each day that builds your streak.</span></div>
+          <div class="feat"><b>⌨️ Runnable practice</b><span class="muted">JavaScript & Python exercises that run in the browser with instant test results.</span></div>
+          <div class="feat"><b>📚 Quizzes & lessons</b><span class="muted">~80 quizzes and lessons across Python, JS, HTML, CSS, SQL, C, Git, CS.</span></div>
+          <div class="feat"><b>⭐ XP, levels, badges</b><span class="muted">Earn XP and unlock achievements to keep the daily habit going.</span></div>
+          <div class="feat"><b>🎯 Curriculum, projects, goals</b><span class="muted">Track CS50x / CS50 Web, your portfolio, and milestones.</span></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Set-up in 6 steps</h2>
+        <ol>
+          <li><b>Open the app</b> with “Launch the web app”.</li>
+          <li>On the <b>welcome screen</b>, set your reminder time and (optionally) enable notifications.</li>
+          <li><b>Install it</b> to your home screen / desktop (see “Get it on your device”).</li>
+          <li>Do the <b>Daily dose</b> each day — it ticks off practice and grows your streak.</li>
+          <li>Tick off <b>Curriculum</b>, add <b>Projects</b> &amp; <b>Goals</b>, reflect in the <b>Journal</b>.</li>
+          <li><b>Back up</b> anytime via Settings → Export JSON (and Import to move devices).</li>
+        </ol>
+        <p class="note">Login: Pathway is local-first — no sign-in required, and nothing is uploaded. To sync across devices later, it can be connected to a free backend (Supabase).</p>
+      </section>
+
+      <section>
+        <h2>Link up & keep learning</h2>
+        <p class="muted">Add your own profile links in the app (Settings → Your links), and jump to the courses Pathway tracks:</p>
+        <div class="links">
+          <a class="pill" href="https://cs50.harvard.edu/x/">CS50x</a>
+          <a class="pill" href="https://cs50.harvard.edu/web/">CS50 Web</a>
+          <a class="pill" href="https://exercism.org">Exercism</a>
+          <a class="pill" href="https://www.w3schools.com">W3Schools</a>
+          <a class="pill" href="https://developer.mozilla.org">MDN</a>
+          <a class="pill" href="https://github.com/youdontknowifyouknowthisemail-droid/pathway">GitHub repo</a>
+        </div>
+      </section>
+
+      <footer>
+        <a href="./privacy.html">Privacy</a> · <a href="https://github.com/youdontknowifyouknowthisemail-droid/pathway">Source</a> · Made for the long game 📈
+      </footer>
+    </main>
+  </body>
+</html>
